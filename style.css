@@ -4,6 +4,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
+    overflow: hidden;
 }
 
 .toolbar {
@@ -46,4 +47,19 @@ button.danger:hover { background-color: #ff4757; }
     justify-content: center;
     color: #888;
     overflow: hidden;
+}
+
+/* Calculamos que la grilla ocupe exactamente el 100% de la pantalla menos la barra superior */
+main {
+    height: calc(100vh - 66px); /* 66px es aprox lo que mide el header */
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+/* El diseño del "Fantasma" que muestra dónde va a caer la ventana */
+.grid-stack-placeholder > .placeholder-content {
+    border: 3px dashed #00ffcc !important; /* Borde celeste neón */
+    background-color: rgba(0, 255, 204, 0.1) !important;
+    border-radius: 8px;
+    transition: all 0.1s ease;
 }
