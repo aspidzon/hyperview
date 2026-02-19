@@ -63,3 +63,70 @@ main {
     border-radius: 8px;
     transition: all 0.1s ease;
 }
+/* --- ESTILOS DE LAS VENTANAS INTERNAS --- */
+.grid-stack-item-content {
+    display: flex;
+    flex-direction: column; /* Apila el título y el contenido */
+    background-color: #1e1e1e;
+    padding: 0;
+}
+
+/* La barrita superior de la ventana que usás para arrastrar */
+.window-header {
+    background-color: #2a2a2a;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #aaa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #444;
+    cursor: grab; /* Muestra la manito para arrastrar */
+}
+
+.window-header:active {
+    cursor: grabbing;
+}
+
+.window-body {
+    width: 100%; /* Esta era la clave que faltaba */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: #000; /* Fondo negro por si el stream tarda en cargar */
+}
+
+
+/* Inputs y botones de la ventana vacía */
+.url-input {
+    width: 80%;
+    padding: 8px;
+    margin-bottom: 10px;
+    background-color: #333;
+    border: 1px solid #555;
+    color: white;
+    border-radius: 4px;
+}
+
+.load-source-btn {
+    background-color: #00ffcc;
+    color: #000;
+}
+
+.load-source-btn:hover {
+    background-color: #00ccaa;
+}
+
+.source-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #000;
+}

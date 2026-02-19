@@ -1,27 +1,26 @@
-// Función para calcular el alto exacto de cada celda en píxeles
+// 1. Calculamos el alto de la celda
 function obtenerAltoCelda() {
     const altoPantalla = window.innerHeight;
-    const altoHeader = 80; // Lo que mide tu barra de herramientas
+    const altoHeader = 80; 
     const altoDisponible = altoPantalla - altoHeader;
     return Math.floor(altoDisponible / 12) + 'px'; 
 }
 
-// 1. Inicializamos el Arrangement Mode
+// 2. Inicializamos Gridstack
 const grid = GridStack.init({
     column: 12,
-    maxRow: 12, // Límite en Y para que no haya scroll
-    cellHeight: obtenerAltoCelda(), // Llamamos a la función matemática
+    maxRow: 12,
+    cellHeight: obtenerAltoCelda(), 
     margin: 5,
     animate: true,
     resizable: { handles: 'e, se, s, sw, w, n, nw, ne' } 
 });
 
-// Si el usuario cambia el tamaño de la ventana, recalculamos el alto
 window.addEventListener('resize', () => {
     grid.cellHeight(obtenerAltoCelda());
 });
 
-// 2. Agregar ventana con inteligencia
+// 3. Agregar ventana inteligente con su HTML interno
 document.getElementById('add-btn').addEventListener('click', () => {
     try {
         const nodos = grid.engine.nodes; 
@@ -35,7 +34,6 @@ document.getElementById('add-btn').addEventListener('click', () => {
         const nuevaCantidad = cantidadActual + 1;
         let columnas, filas;
         
-        // Lógica de divisiones
         if (nuevaCantidad === 1) { columnas = 1; filas = 1; }
         else if (nuevaCantidad === 2) { columnas = 2; filas = 1; }
         else if (nuevaCantidad <= 4) { columnas = 2; filas = 2; }
@@ -58,12 +56,24 @@ document.getElementById('add-btn').addEventListener('click', () => {
         const xNuevo = (indexNuevo % columnas) * w;
         const yNuevo = Math.floor(indexNuevo / columnas) * h;
 
+        // El diseño de la ventana con el botón "X"
+        const contenidoHTML = `
+            <div class="window-header">
+                <span class="window-title">Ventana ${nuevaCantidad}</span>
+                <button class="close-btn" title="Cerrar ventana">✖</button>
+            </div>
+            <div class="window-body">
+                <input type="text" class="url-input" placeholder="Pegar URL de YouTube, Twitch, etc...">
+                <button class="load-source-btn">Cargar Fuente</button>
+            </div>
+        `;
+
         grid.addWidget({ 
             x: xNuevo, 
             y: yNuevo, 
             w: w, 
             h: h, 
-            content: `Ventana ${nuevaCantidad}` 
+            content: contenidoHTML 
         });
 
         grid.commit(); 
@@ -73,12 +83,67 @@ document.getElementById('add-btn').addEventListener('click', () => {
     }
 });
 
-// 3. Limpiar toda la grilla
+// 4. Traductor inteligente de URLs (YouTube y Twitch)
+function adaptarURL(urlOriginal) {
+    let url = urlOriginal.trim();
+    
+    // Le agregamos https:// si el usuario se olvidó, para evitar errores
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+    }
+
+    try {
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            let videoId = '';
+            if (url.includes('youtu.be/')) {
+                videoId = url.split('youtu.be/')[1].split('?')[0];
+            } else {
+                const urlObj = new URL(url);
+                videoId = urlObj.searchParams.get('v');
+            }
+            if (videoId) {
+                return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+            }
+        }
+        
+        if (url.includes('twitch.tv/')) {
+            const canal = url.split('twitch.tv/')[1].split('?')[0];
+            return `https://player.twitch.tv/?channel=${canal}&parent=localhost`;
+        }
+    } catch (e) {
+        console.error("Error adaptando la URL", e);
+    }
+
+    return url;
+}
+
+// 5. Detectar clics en "Cargar" o en la "X"
+document.addEventListener('click', (e) => {
+    // Si toca cargar
+    if (e.target.classList.contains('load-source-btn')) {
+        const windowBody = e.target.closest('.window-body');
+        const input = windowBody.querySelector('.url-input');
+        const urlOriginal = input.value.trim();
+
+        if (urlOriginal === "") return alert("Por favor, pegá un enlace primero.");
+
+        const urlFinal = adaptarURL(urlOriginal);
+        // Inyectamos el iframe
+        windowBody.innerHTML = `<iframe class="source-iframe" src="${urlFinal}" allow="autoplay; fullscreen"></iframe>`;
+    }
+
+    // Si toca la X de cerrar
+    if (e.target.classList.contains('close-btn')) {
+        const widget = e.target.closest('.grid-stack-item');
+        grid.removeWidget(widget);
+    }
+});
+
+// 6. Botones de Control General (Limpiar, Guardar, Cargar)
 document.getElementById('clear-btn').addEventListener('click', () => {
     grid.removeAll();
 });
 
-// 4. Guardar Perfil (.hyprv)
 document.getElementById('save-btn').addEventListener('click', () => {
     const layout = grid.save(); 
     const layoutJSON = JSON.stringify(layout);
@@ -93,7 +158,6 @@ document.getElementById('save-btn').addEventListener('click', () => {
     URL.revokeObjectURL(url);
 });
 
-// 5. Cargar Perfil (.hyprv)
 const loadInput = document.getElementById('load-input');
 document.getElementById('load-btn').addEventListener('click', () => loadInput.click());
 
