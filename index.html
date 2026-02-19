@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyperview</title>
+    <link href="https://cdn.jsdelivr.net/npm/gridstack@10.0.1/dist/gridstack.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/gridstack@10.0.1/dist/gridstack-all.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="toolbar">
+        <h1>Hyperview</h1>
+        <div class="buttons">
+            <button id="add-btn">+ Agregar Ventana</button>
+            <button id="save-btn">💾 Guardar Perfil (.hyprv)</button>
+            <input type="file" id="load-input" accept=".hyprv" style="display: none;">
+            <button id="load-btn">📂 Cargar Perfil</button>
+            <button id="clear-btn" class="danger">🗑️ Limpiar Todo</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="grid-stack"></div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
