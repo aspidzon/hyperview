@@ -1,23 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hyperview</title>
-    <link href="https://cdn.jsdelivr.net/npm/gridstack@10.0.1/dist/gridstack.min.css" rel="stylesheet"/>
+    <link rel="icon" href="etc/Hyperview image.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/gridstack@10.0.1/dist/gridstack.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/gridstack@10.0.1/dist/gridstack-all.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <header class="toolbar">
-        <h1>Hyperview</h1>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="etc/anotha logo.png" alt="Logo" style="height: 30px;">
+            <h1>Hyperview</h1>
+        </div>
         <div class="buttons">
-            <button id="add-btn">+ Agregar Ventana</button>
-            <button id="save-btn">💾 Guardar Perfil (.hyprv)</button>
+            <button id="toggle-mode-btn">⚙️</button>
+            <button id="undo-btn" style="display: none;">↩️</button>
+            <button id="redo-btn" style="display: none;">↪️</button>
+            <button id="add-btn">+</button>
+            <button id="add-source-modal-btn" style="background-color: #ff9900;">←</button>
+            <button id="save-btn">💾</button>
             <input type="file" id="load-input" accept=".hyprv" style="display: none;">
-            <button id="load-btn">📂 Cargar Perfil</button>
-            <button id="clear-btn" class="danger">🗑️ Limpiar Todo</button>
+            <button id="load-btn">📂</button>
+            <button id="clear-btn" class="danger">🗑️</button>
         </div>
     </header>
 
@@ -25,6 +35,29 @@
         <div class="grid-stack"></div>
     </main>
 
+    <!-- Modal para añadir ventana con fuente pre-cargada -->
+    <div id="add-source-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Añadir Ventana con Fuente</h3>
+            <input type="text" id="modal-url-input" class="url-input" placeholder="Pegar URL de YouTube, Twitch, etc..."
+                style="width: 90%;">
+            <p style="margin: 15px 0 5px 0; font-size: 14px; color: #ccc;">O seleccionar un archivo local (video,
+                imagen, etc):</p>
+            <label class="local-file-button" style="display: inline-block;">
+                <input type="file" id="modal-file-input" accept="video/*,audio/*,image/*,.pdf,text/*"
+                    style="display: none;">
+                <span class="load-source-btn"
+                    style="padding: 10px 15px; display: inline-block; border-radius: 5px; cursor: pointer;">Seleccionar
+                    Archivo</span>
+            </label>
+            <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button id="modal-cancel-btn">Cancelar</button>
+                <button id="modal-add-btn" style="background-color: #00ffcc; color: black;">Añadir</button>
+            </div>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 </body>
+
 </html>

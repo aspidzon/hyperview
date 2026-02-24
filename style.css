@@ -1,10 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap');
+
+@font-face {
+    font-family: 'sosumi';
+    src: url('fonts/SF-Pro-Display-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
     background-color: #121212;
     color: #ffffff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'sosumi', sans-serif;
     margin: 0;
     padding: 0;
     overflow: hidden;
+    user-select: none;
+    /* Make UI unselectable */
 }
 
 .toolbar {
@@ -14,12 +25,38 @@ body {
     justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid #333;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+}
+
+body.view-mode .toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transform: translateY(-100%);
+    box-sizing: border-box;
+}
+
+body.view-mode .toolbar::after {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    left: 0;
+    width: 100%;
+    height: 30px;
+}
+
+body.view-mode .toolbar:hover {
+    transform: translateY(0);
 }
 
 h1 {
     margin: 0;
     font-size: 24px;
     letter-spacing: 2px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
 }
 
 button {
@@ -30,12 +67,18 @@ button {
     margin-left: 10px;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: bold;
+    font-family: 'sosumi';
+    font-size: 14px;
     transition: 0.2s;
 }
 
-button:hover { background-color: #555; }
-button.danger:hover { background-color: #ff4757; }
+button:hover {
+    background-color: #555;
+}
+
+button.danger:hover {
+    background-color: #ff4757;
+}
 
 /* Diseño de cada ventana individual */
 .grid-stack-item-content {
@@ -51,22 +94,32 @@ button.danger:hover { background-color: #ff4757; }
 
 /* Calculamos que la grilla ocupe exactamente el 100% de la pantalla menos la barra superior */
 main {
-    height: calc(100vh - 66px); /* 66px es aprox lo que mide el header */
+    height: calc(100vh - 66px);
+    /* 66px es aprox lo que mide el header */
     padding: 5px;
     box-sizing: border-box;
+    transition: padding 0.3s ease, height 0.3s ease;
+}
+
+body.view-mode main {
+    height: 100vh;
+    padding: 0;
 }
 
 /* El diseño del "Fantasma" que muestra dónde va a caer la ventana */
-.grid-stack-placeholder > .placeholder-content {
-    border: 3px dashed #00ffcc !important; /* Borde celeste neón */
+.grid-stack-placeholder>.placeholder-content {
+    border: 3px dashed #9ea5e4 !important;
+    /* Borde celeste neón */
     background-color: rgba(0, 255, 204, 0.1) !important;
     border-radius: 8px;
     transition: all 0.1s ease;
 }
+
 /* --- ESTILOS DE LAS VENTANAS INTERNAS --- */
 .grid-stack-item-content {
     display: flex;
-    flex-direction: column; /* Apila el título y el contenido */
+    flex-direction: column;
+    /* Apila el título y el contenido */
     background-color: #1e1e1e;
     padding: 0;
 }
@@ -82,7 +135,8 @@ main {
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #444;
-    cursor: grab; /* Muestra la manito para arrastrar */
+    cursor: grab;
+    /* Muestra la manito para arrastrar */
 }
 
 .window-header:active {
@@ -90,35 +144,87 @@ main {
 }
 
 .window-body {
-    width: 100%; /* Esta era la clave que faltaba */
+    width: 100%;
+    /* Esta era la clave que faltaba */
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
-    background-color: #000; /* Fondo negro por si el stream tarda en cargar */
+    background-color: #000;
+    /* Fondo negro por si el stream tarda en cargar */
+    overflow: hidden;
+}
+
+body.view-mode .window-header {
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    pointer-events: none;
+    z-index: 10;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+body.view-mode .window-title {
+    background-color: rgb(0, 0, 0, 0.5);
+    padding: 8px 30px;
+    border-radius: 4px 4px 0 0;
+    backdrop-filter: none;
+    border: none;
+    color: #dedede;
+    pointer-events: auto;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.4);
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 0;
+    transform: translateY(1px);
+    transition: background-color 0.2s;
+}
+
+body.view-mode .window-title:hover {
+    background-color: #4b4b4b;
 }
 
 
 /* Inputs y botones de la ventana vacía */
 .url-input {
-    width: 80%;
+    width: 50%;
     padding: 8px;
     margin-bottom: 10px;
     background-color: #333;
     border: 1px solid #555;
     color: white;
-    border-radius: 4px;
+    border-radius: 8px;
+    font-family: 'sosumi';
+    font-size: 14px;
+}
+
+.local-file-input {
+    width: 50%;
+    padding: 8px;
+    margin-bottom: 10px;
+    background-color: #333;
+    border: 1px solid #555;
+    color: white;
+    border-radius: 8px;
+    font-family: 'sosumi';
+    font-size: 14px;
 }
 
 .load-source-btn {
-    background-color: #00ffcc;
+    background-color: #9ea5e4;
     color: #000;
 }
 
 .load-source-btn:hover {
-    background-color: #00ccaa;
+    background-color: #9ea5e4;
 }
 
 .source-iframe {
@@ -129,4 +235,53 @@ main {
     top: 0;
     left: 0;
     background-color: #000;
+}
+
+/* Estilos para el título editable de la ventana */
+.window-title {
+    outline: none;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    min-width: 50px;
+    display: inline-block;
+}
+
+.window-title[contenteditable="true"]:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    cursor: text;
+}
+
+.window-title[contenteditable="true"]:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: text;
+    user-select: text;
+}
+
+/* Modal styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #1e1e1e;
+    padding: 20px 30px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    width: 400px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: #fff;
 }
